@@ -23,6 +23,41 @@ pinMode(PIN_CURRENT_SENSOR, INPUT);
 
 }
 
+struct SystemVariables_t{
+    int referenceCurrent = 0;
+
+} systemVariables;
+
+void setReferenceCurrent(){
+    systemVariables.referenceCurrent = analogRead(PIN_CURRENT_SENSOR);
+}
+
+int getCurrent(){
+    int t = analogRead(PIN_CURRENT_SENSOR);
+    t -= systemVariables.referenceCurrent;
+    return t;
+}
+
+void printReadableCurrent(){
+    //current sensor is 10A bi directional
+    //So 1024/2 = 512 point in one directon and 512 in other
+    // 10 000 ma / 512 = 19.5mA
+    Serial.print( (float)(getCurrent()) * 0.0195f * 4);
+    Serial.print("A");
+
+}
+
+void printReadableCurrent_mA(){
+    //current sensor is 10A bi directional
+    //So 1024/2 = 512 point in one directon and 512 in other
+    // 10 000 ma / 512 = 19.5mA
+    //dont know why I need to multiply by 4
+    //see later
+    Serial.print( (float)(getCurrent()) * 19.5f * 4 );
+    Serial.print("mA");
+
+}
+
 void testSequence(){
 
     uint32_t timerLocal_001 = millis();
@@ -36,7 +71,9 @@ void testSequence(){
             Serial.print(F("Fan low speed : "));
             Serial.print( (millis() - timerLocal_001) / 1000);
             Serial.print(" ");
-            Serial.println(analogRead(PIN_CURRENT_SENSOR) );
+            printReadableCurrent();
+            Serial.println();
+            
         }
     }
     digitalWrite(PIN_FAN_LOW_SPEED, 0);
@@ -53,7 +90,8 @@ void testSequence(){
             Serial.print(F("Fan high speed : "));
             Serial.print( (millis() - timerLocal_001) / 1000);
             Serial.print(" ");
-            Serial.println(analogRead(PIN_CURRENT_SENSOR) );
+            printReadableCurrent();
+            Serial.println();
         }
     }
     digitalWrite(PIN_FAN_HIGH_SPEED, 0);
@@ -85,7 +123,8 @@ void testSequence(){
             Serial.print(F("compressor : "));
             Serial.print( (millis() - timerLocal_001) / 1000);
             Serial.print(" ");
-            Serial.println(analogRead(PIN_CURRENT_SENSOR) );
+            printReadableCurrent();
+            Serial.println();
         }
     }
     digitalWrite(PIN_COMPRESSOR, 0);
@@ -102,7 +141,8 @@ void testSequence(){
             Serial.print(F("Water pump : "));
             Serial.print( (millis() - timerLocal_001) / 1000);
             Serial.print(" ");
-            Serial.println(analogRead(PIN_CURRENT_SENSOR) );
+            printReadableCurrent();
+            Serial.println();
         }
     }
     digitalWrite(PIN_WATER_PUMP, 0);
@@ -117,7 +157,8 @@ void testSequence(){
         if(millis() - timerLocal_002 > 100){
             timerLocal_002 = millis();
             Serial.print(F("Heat resistor : "));
-            Serial.println(analogRead(PIN_CURRENT_SENSOR) );
+            printReadableCurrent();
+            Serial.println();
         }
     }
     digitalWrite(PIN_LEGACY_RESISTOR_HEAT, 0);
