@@ -38,6 +38,18 @@ int getCurrent(){
     return t;
 }
 
+void printTempSensorReport(){
+    Serial.print("TopWater:");
+    
+    Serial.print(analogRead(PIN_TEMP_WATER_TOP) );
+    Serial.print(", WaterPipe:");
+    Serial.print(analogRead(PIN_TEMP_WATER_PIPE) );
+    Serial.print(", HeatExch:");
+    Serial.print(analogRead(PIN_TEMP_HEAT_EXCHANGER) );
+    Serial.print(", FlowEvap:");
+    Serial.print(analogRead(PIN_TEMP_AIR_FLOW_EVAP) );
+}
+
 void printReadableCurrent(){
     //current sensor is 10A bi directional
     //So 1024/2 = 512 point in one directon and 512 in other
@@ -167,6 +179,53 @@ void testSequence(){
     Serial.println("Test Sequence done");
     delay(1000);
 
+}
+
+void allOff(){
+    digitalWrite(PIN_FAN_LOW_SPEED, 0);
+    digitalWrite(PIN_FAN_HIGH_SPEED, 0);
+    digitalWrite(PIN_COMPRESSOR, 0);
+    digitalWrite(PIN_BYPASS_PRESSURE_REDUCER, 0);
+    digitalWrite(PIN_LEGACY_RESISTOR_HEAT, 0);
+    digitalWrite(PIN_WATER_PUMP, 0);
+}
+
+void forceSystem(){
+
+    // digitalWrite(PIN_FAN_LOW_SPEED, 1);
+    // digitalWrite(PIN_FAN_HIGH_SPEED, 0);
+    // digitalWrite(PIN_COMPRESSOR, 0);
+    // digitalWrite(PIN_BYPASS_PRESSURE_REDUCER, 1);
+    // digitalWrite(PIN_LEGACY_RESISTOR_HEAT, 0);
+    // digitalWrite(PIN_WATER_PUMP, 1);
+
+    // delay(3000);
+
+    // digitalWrite(PIN_FAN_LOW_SPEED, 1);
+    // digitalWrite(PIN_FAN_HIGH_SPEED, 0);
+    // digitalWrite(PIN_COMPRESSOR, 1);
+    // digitalWrite(PIN_BYPASS_PRESSURE_REDUCER, 1);
+    // digitalWrite(PIN_LEGACY_RESISTOR_HEAT, 0);
+    // digitalWrite(PIN_WATER_PUMP, 1);
+
+    // delay(3000);
+
+    digitalWrite(PIN_FAN_LOW_SPEED, 0);
+    digitalWrite(PIN_FAN_HIGH_SPEED, 1);
+    digitalWrite(PIN_COMPRESSOR, 1);
+    digitalWrite(PIN_BYPASS_PRESSURE_REDUCER, 0);
+    digitalWrite(PIN_LEGACY_RESISTOR_HEAT, 0);
+    digitalWrite(PIN_WATER_PUMP, 1);
+
+}
+
+void forceCoolDown(){
+    digitalWrite(PIN_FAN_LOW_SPEED, 0);
+    digitalWrite(PIN_FAN_HIGH_SPEED, 1);
+    digitalWrite(PIN_COMPRESSOR, 0);
+    digitalWrite(PIN_BYPASS_PRESSURE_REDUCER, 0);
+    digitalWrite(PIN_LEGACY_RESISTOR_HEAT, 0);
+    digitalWrite(PIN_WATER_PUMP, 1);
 }
 
 void setupTimer(){
