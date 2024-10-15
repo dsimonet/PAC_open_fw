@@ -38,16 +38,50 @@ int getCurrent(){
     return t;
 }
 
+float getCorrectedTemp(uint8_t pin, float serie_resistor,  const float coeff[]){
+
+    int Vo;
+    float logR1, NTC, T, Tc;
+
+    Vo = analogRead(pin);
+
+    if(Vo == 0 || Vo == 1023)
+        return -273.15f; 
+
+    NTC =  (Vo * serie_resistor) / (1023 - Vo);
+    logR1 = log(NTC);
+    T = (1.0 / (coeff[0] + coeff[1]*logR1 + coeff[2]*logR1*logR1*logR1));
+    Tc = T - 273.15;
+
+    return Tc;
+}
+
+float getCorrectedTemp_waterTop(){
+    return getCorrectedTemp(PIN_TEMP_WATER_TOP, serie_resistor_water_top, reference_coefficients_water_top ) ;
+}
+
+float getCorrectedTemp_waterPipe(){
+    return getCorrectedTemp(PIN_TEMP_WATER_PIPE, serie_resistor_water_pipe, reference_coefficients_water_top );
+
+}
+float getCorrectedTemp_heatExchanger(){
+    return getCorrectedTemp(PIN_TEMP_HEAT_EXCHANGER,serie_resistor_heat_exchanger, reference_coefficients_heat_exchanger );
+
+}
+float getCorrectedTemp_air_flux_evap(){
+    return getCorrectedTemp(PIN_TEMP_AIR_FLOW_EVAP,serie_resistor_air_flux_evap, reference_coefficients_air_flux_evap );
+
+}
+
 void printTempSensorReport(){
-    Serial.print("TopWater:");
-    
-    Serial.print(analogRead(PIN_TEMP_WATER_TOP) );
-    Serial.print(", WaterPipe:");
-    Serial.print(analogRead(PIN_TEMP_WATER_PIPE) );
-    Serial.print(", HeatExch:");
-    Serial.print(analogRead(PIN_TEMP_HEAT_EXCHANGER) );
-    Serial.print(", FlowEvap:");
-    Serial.print(analogRead(PIN_TEMP_AIR_FLOW_EVAP) );
+
+        Serial.print( getCorrectedTemp_waterTop() );
+        Serial.print(", ");
+        Serial.print( getCorrectedTemp_waterPipe() );
+        Serial.print(", ");
+        Serial.print( getCorrectedTemp_heatExchanger()  );
+        Serial.print(", ");
+        Serial.print( getCorrectedTemp_air_flux_evap() );
 }
 
 void printReadableCurrent(){

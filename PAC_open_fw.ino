@@ -21,7 +21,7 @@ void setup(){
 }
 
 uint32_t timer_print_data = 60e3;
-const uint32_t print_delay = 10e3;
+const uint32_t print_delay = 100;
 bool print_flag = true;
 
 
@@ -42,13 +42,13 @@ void loop(){
         
     }
     
-    if(analogRead(PIN_TEMP_HEAT_EXCHANGER) < 510){
+    if(getCorrectedTemp_heatExchanger() < 50.0 ){
         //off
         forceCoolDown();
 
         if(print_flag)
             Serial.print(" - OFF");
-    }else if(analogRead(PIN_TEMP_HEAT_EXCHANGER) > 540){
+    }else if(getCorrectedTemp_heatExchanger() > 60){
         //on
         forceSystem();
 
@@ -59,17 +59,18 @@ void loop(){
     
     
 
-    if( analogRead(PIN_TEMP_WATER_TOP) > 250 || analogRead(PIN_TEMP_WATER_PIPE) < 470 ){
-         while (1)
-         {
+    // if( analogRead(PIN_TEMP_WATER_TOP) > 50 || analogRead(PIN_TEMP_WATER_PIPE) >70 ){
+    //      while (1)
+    //      {
             
-            Serial.println(" STOP TEMP ERROR !!!");
-            printTempSensorReport();
-            delay(60e3);
+    //         Serial.println(" STOP TEMP ERROR !!!");
+    //         printTempSensorReport();
+            
+    //         delay(60e3);
 
-         }
+    //      }
          
-    }
+    // }
 
     if(print_flag){
         Serial.println();

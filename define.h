@@ -11,6 +11,19 @@ const uint8_t PIN_LEGACY_RESISTOR_HEAT = 5;
 const uint8_t PIN_WATER_PUMP = 8;
 
 //SENSORS
+
+//see https://www.thinksrs.com/downloads/programs/therm%20calc/ntccalibrator/ntccalculator.html
+// C1 e-3, C2 e-4, C3 e-7
+const float reference_coefficients_water_top[3] =       {0.8152350653e-03, 2.948759503e-04, -2.253994324e-07};
+const float reference_coefficients_water_pipe[3] =      {-0.03240305442e-03, 4.401381657e-04, -8.145708226e-07};
+const float reference_coefficients_heat_exchanger[3] =  {0.8152350653e-03, 2.948759503e-04, -2.253994324e-07};
+const float reference_coefficients_air_flux_evap[3] =   {0.3426591640e-03, 3.554302673e-04, -2.820340671e-07};
+
+const float serie_resistor_water_top = 3300;
+const float serie_resistor_water_pipe = 10000;
+const float serie_resistor_heat_exchanger = 10000;
+const float serie_resistor_air_flux_evap = 22000;
+
 const uint8_t PIN_TEMP_WATER_TOP = A0;
 const uint8_t PIN_TEMP_WATER_PIPE = A1;
 const uint8_t PIN_TEMP_HEAT_EXCHANGER = A2;
