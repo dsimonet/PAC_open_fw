@@ -17,8 +17,8 @@ Adafruit_SH1106G tft = Adafruit_SH1106G(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED
 
 
 //ACTUACTOR
-const uint8_t PIN_FAN_HIGH_SPEED = 11;
-const uint8_t PIN_FAN_LOW_SPEED = 7;
+const uint8_t PIN_FAN_HIGH_SPEED = 7;
+const uint8_t PIN_FAN_LOW_SPEED = 11;
 const uint8_t PIN_COMPRESSOR = 4;
 const uint8_t PIN_BYPASS_PRESSURE_REDUCER = 9;
 const uint8_t PIN_LEGACY_RESISTOR_HEAT = 5;
