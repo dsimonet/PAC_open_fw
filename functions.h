@@ -74,13 +74,13 @@ float getCorrectedTemp_air_flux_evap(){
 }
 
 void printTempSensorReport(){
-
+        Serial.print("water top:");
         Serial.print( getCorrectedTemp_waterTop() );
-        Serial.print(", ");
+        Serial.print(", water pipe:");
         Serial.print( getCorrectedTemp_waterPipe() );
-        Serial.print(", ");
+        Serial.print(", heat ex:");
         Serial.print( getCorrectedTemp_heatExchanger()  );
-        Serial.print(", ");
+        Serial.print(", evap:");
         Serial.print( getCorrectedTemp_air_flux_evap() );
 }
 
@@ -244,8 +244,8 @@ void forceSystem(){
 
     // delay(3000);
 
-    digitalWrite(PIN_FAN_LOW_SPEED, 0);
-    digitalWrite(PIN_FAN_HIGH_SPEED, 1);
+    digitalWrite(PIN_FAN_LOW_SPEED, 1);
+    digitalWrite(PIN_FAN_HIGH_SPEED, 0);
     digitalWrite(PIN_COMPRESSOR, 1);
     digitalWrite(PIN_BYPASS_PRESSURE_REDUCER, 0);
     digitalWrite(PIN_LEGACY_RESISTOR_HEAT, 0);
@@ -254,8 +254,8 @@ void forceSystem(){
 }
 
 void forceCoolDown(){
-    digitalWrite(PIN_FAN_LOW_SPEED, 0);
-    digitalWrite(PIN_FAN_HIGH_SPEED, 1);
+    digitalWrite(PIN_FAN_LOW_SPEED, 1);
+    digitalWrite(PIN_FAN_HIGH_SPEED, 0);
     digitalWrite(PIN_COMPRESSOR, 0);
     digitalWrite(PIN_BYPASS_PRESSURE_REDUCER, 0);
     digitalWrite(PIN_LEGACY_RESISTOR_HEAT, 0);
