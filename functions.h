@@ -271,6 +271,10 @@ void setupCurrentSensor(){
 }
 
 void checkSensors(){
+    analogRead(PIN_TEMP_WATER_TOP);
+    analogRead(PIN_TEMP_WATER_PIPE);
+    analogRead(PIN_TEMP_HEAT_EXCHANGER);
+    analogRead(PIN_TEMP_AIR_FLOW_EVAP);
 
 }
 
