@@ -2,6 +2,20 @@
 #ifndef __DEFINE_H__
 #define __DEFINE_H__
 
+#include <SPI.h>
+#include <Wire.h>
+#include <Adafruit_SH110X.h>
+
+//DISPLAY
+
+/* Uncomment the initialize the I2C address , uncomment only one, If you get a totally blank screen try the other*/
+#define i2c_Address 0x3c //initialize with the I2C addr 0x3C Typically eBay OLED's
+#define SCREEN_WIDTH 128 // OLED display width, in pixels
+#define SCREEN_HEIGHT 64 // OLED display height, in pixels
+#define OLED_RESET -1   //   QT-PY / XIAO
+Adafruit_SH1106G tft = Adafruit_SH1106G(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
+
+
 //ACTUACTOR
 const uint8_t PIN_FAN_HIGH_SPEED = 11;
 const uint8_t PIN_FAN_LOW_SPEED = 7;

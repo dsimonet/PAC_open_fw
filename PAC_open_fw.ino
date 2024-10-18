@@ -1,10 +1,22 @@
 
+#include <SPI.h>
+#include <Wire.h>
+#include <Adafruit_SH110X.h>
+
 #include "functions.h"
 #include "define.h"
 
 void setup(){
 
     Serial.begin(115200);
+
+    tft.begin(i2c_Address, true); // Address 0x3C default
+    tft.clearDisplay();
+    tft.display();
+
+    tft.setTextSize(1);
+    tft.setTextColor(SH110X_WHITE);
+
     Serial.println();Serial.println();Serial.println();Serial.println();
     Serial.println(" -- PAC FW init start -- ");
     Serial.print("Init GPIO:");             setupPin();             Serial.println("done");
@@ -33,13 +45,39 @@ void loop(){
     if(millis() - timer_print_data > print_delay){
         print_flag = true;
         timer_print_data = millis();
+        tft.clearDisplay();
     }
 
     if(print_flag){
         printTempSensorReport();
         Serial.print(", ");
         printReadableCurrent();
-        
+
+        tft.setCursor(0, 0);
+        tft.print("water top:  ");
+        tft.print(getCorrectedTemp_waterTop() );
+        tft.print( (char)247 ); tft.print("C");
+        tft.println();
+
+        //tft.setCursor(0, 1);
+        tft.print("water pipe: ");
+        tft.print(getCorrectedTemp_waterPipe() );
+        tft.print( (char)247 ); tft.print("C");
+        tft.println();
+
+        //tft.setCursor(0, 0);
+        tft.print("heat ex:    ");
+        tft.print(getCorrectedTemp_heatExchanger() );
+        tft.print( (char)247 ); tft.print("C");
+        tft.println();
+
+        //tft.setCursor(0, 0);
+        tft.print("evap:       ");
+        tft.print( getCorrectedTemp_air_flux_evap() );
+        tft.print( (char)247 ); tft.print("C");
+        tft.println();
+
+        tft.display();
     }
     
     if(getCorrectedTemp_heatExchanger() < 50.0 ){
