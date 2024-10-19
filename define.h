@@ -17,12 +17,20 @@ Adafruit_SH1106G tft = Adafruit_SH1106G(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED
 
 
 //ACTUACTOR
-const uint8_t PIN_FAN_HIGH_SPEED = 7;
-const uint8_t PIN_FAN_LOW_SPEED = 11;
-const uint8_t PIN_COMPRESSOR = 4;
-const uint8_t PIN_BYPASS_PRESSURE_REDUCER = 9;
-const uint8_t PIN_LEGACY_RESISTOR_HEAT = 5;
-const uint8_t PIN_WATER_PUMP = 8;
+const uint8_t PIN_BYPASS_PRESSURE_REDUCER = 26;
+const uint8_t PIN_WATER_PUMP = 28;
+const uint8_t PIN_FAN_HIGH_SPEED = 30;
+const uint8_t PIN_COMPRESSOR = 48;
+const uint8_t PIN_FAN_LOW_SPEED = 46;
+const uint8_t PIN_LEGACY_RESISTOR_HEAT = 44;
+
+//BUTTONS
+const uint8_t PIN_BUTTON_CONFIRM = 3;
+const uint8_t PIN_BUTTON_PUSH = 4;
+const uint8_t PIN_BUTTON_TRA = 5;
+const uint8_t PIN_BUTTON_TRB = 6;
+const uint8_t PIN_BUTTON_BACK = 7;
+
 
 //SENSORS
 
@@ -38,13 +46,13 @@ const float serie_resistor_water_pipe = 10000;
 const float serie_resistor_heat_exchanger = 10000;
 const float serie_resistor_air_flux_evap = 22000;
 
-const uint8_t PIN_TEMP_WATER_TOP = A0;
-const uint8_t PIN_TEMP_WATER_PIPE = A1;
-const uint8_t PIN_TEMP_HEAT_EXCHANGER = A2;
-const uint8_t PIN_TEMP_AIR_FLOW_EVAP = A3;
+const uint8_t PIN_TEMP_WATER_TOP = A8;
+const uint8_t PIN_TEMP_WATER_PIPE = A9;
+const uint8_t PIN_TEMP_HEAT_EXCHANGER = A10;
+const uint8_t PIN_TEMP_AIR_FLOW_EVAP = A11;
 
 //ACHS-7121 current sensor
-const uint8_t PIN_CURRENT_SENSOR = A4;
+const uint8_t PIN_CURRENT_SENSOR = A13;
 
 //PCF8563T TIMER
 const uint8_t RTC_ADDR_Write = 0xA2;
