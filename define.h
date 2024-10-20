@@ -51,6 +51,8 @@ const uint8_t PIN_TEMP_WATER_PIPE = A9;
 const uint8_t PIN_TEMP_HEAT_EXCHANGER = A10;
 const uint8_t PIN_TEMP_AIR_FLOW_EVAP = A11;
 
+
+
 //ACHS-7121 current sensor
 const uint8_t PIN_CURRENT_SENSOR = A13;
 

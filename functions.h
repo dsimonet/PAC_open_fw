@@ -38,6 +38,7 @@ int getCurrent(){
     return t;
 }
 
+
 float getCorrectedTemp(uint8_t pin, float serie_resistor,  const float coeff[]){
 
     int Vo;
@@ -254,7 +255,7 @@ void forceSystem(){
 }
 
 void forceCoolDown(){
-    digitalWrite(PIN_FAN_LOW_SPEED, 1);
+    digitalWrite(PIN_FAN_LOW_SPEED, 0);
     digitalWrite(PIN_FAN_HIGH_SPEED, 0);
     digitalWrite(PIN_COMPRESSOR, 0);
     digitalWrite(PIN_BYPASS_PRESSURE_REDUCER, 0);

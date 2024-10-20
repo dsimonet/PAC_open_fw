@@ -62,7 +62,7 @@ void loop(){
         tft.setCursor(0, 0);
 
         tft.print("water top:  ");
-        tft.print(getCorrectedTemp_waterTop() );
+        tft.print( getCorrectedTemp_waterTop() );
         tft.print( (char)247 ); tft.print("C");
         tft.println();
 
@@ -82,31 +82,90 @@ void loop(){
         tft.print( (char)247 ); tft.print("C");
         tft.println();
 
+        if(digitalRead(PIN_COMPRESSOR) ){
+            tft.print(" - COMP ON");
+        }else{
+            tft.print(" - COMP OFF");
+        }
+
+        if(digitalRead(PIN_LEGACY_RESISTOR_HEAT) ){
+            tft.print(" - RES ON");
+        }else{
+            tft.print(" - RES OFF");
+        }
+
         tft.display();
     }
     
-    if( getCorrectedTemp_waterTop() > 40 || getCorrectedTemp_waterPipe() > 40 || getCorrectedTemp_heatExchanger() > 65 ){
+    //température ok
+    if( getCorrectedTemp_waterTop() > 40 || getCorrectedTemp_waterPipe() > 40 ){
 
         if(print_flag){
-            Serial.println(" - STOP TEMP ERROR !!!");
+            Serial.println(" - STOP, TEMP OK");
             printTempSensorReport();
         }
+
+    //temperature error
+    }else if(getCorrectedTemp_waterTop() > 70 || getCorrectedTemp_waterPipe() > 70 || getCorrectedTemp_heatExchanger() > 80){
+            
+            while (1)
+            {   
+                Serial.println(" - STOP, TEMP ERROR");
+                printTempSensorReport();
+                digitalWrite(PIN_FAN_LOW_SPEED, 0);
+                digitalWrite(PIN_FAN_HIGH_SPEED, 1);
+                digitalWrite(PIN_COMPRESSOR, 0);
+                digitalWrite(PIN_BYPASS_PRESSURE_REDUCER, 0);
+                digitalWrite(PIN_LEGACY_RESISTOR_HEAT, 0);
+                digitalWrite(PIN_WATER_PUMP, 1);
+
+                delay(60e3);
+            }
 
          
     }else{
 
-        if(getCorrectedTemp_heatExchanger() > 60 ){
+        if(getCorrectedTemp_heatExchanger() > 68 ){
             //off
-            forceCoolDown();
+            digitalWrite(PIN_FAN_LOW_SPEED, 0);
+            digitalWrite(PIN_FAN_HIGH_SPEED, 0);
+            digitalWrite(PIN_COMPRESSOR, 0);
+            digitalWrite(PIN_BYPASS_PRESSURE_REDUCER, 0);
+            digitalWrite(PIN_WATER_PUMP, 1);
 
-            if(print_flag)
-                Serial.print(" - OFF");
-        }else if(getCorrectedTemp_heatExchanger() < 50){
+        }else if(getCorrectedTemp_heatExchanger() < 60){
             //on
-            forceSystem();
+            digitalWrite(PIN_FAN_LOW_SPEED, 1);
+            digitalWrite(PIN_FAN_HIGH_SPEED, 0);
+            digitalWrite(PIN_COMPRESSOR, 1);
+            digitalWrite(PIN_BYPASS_PRESSURE_REDUCER, 0);
+            
+            digitalWrite(PIN_WATER_PUMP, 1);
+        }
 
-            if(print_flag)
-                Serial.print(" - ON");
+        //make the water pump work in any case
+        digitalWrite(PIN_WATER_PUMP, 1);
+
+        if(getCorrectedTemp_air_flux_evap() < 18){
+            digitalWrite(PIN_LEGACY_RESISTOR_HEAT, 1);
+        }else if(getCorrectedTemp_air_flux_evap() > 18){
+             digitalWrite(PIN_LEGACY_RESISTOR_HEAT, 0);
+        }
+
+
+        if(print_flag){
+            if(digitalRead(PIN_COMPRESSOR) ){
+                Serial.print(" - COMP ON");
+            }else{
+                Serial.print(" - COMP OFF");
+            }
+
+            if(digitalRead(PIN_LEGACY_RESISTOR_HEAT) ){
+                Serial.print(" - RES ON");
+            }else{
+                Serial.print(" - RES OFF");
+            }
+
         }
 
     }
