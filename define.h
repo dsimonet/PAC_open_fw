@@ -6,6 +6,22 @@
 #include <Wire.h>
 #include <Adafruit_SH110X.h>
 
+#include "tempSensor.h"
+
+//SYSTEM TIMER
+uint32_t timer_update_serial = 60e3;   // not zero to get instant print
+uint32_t timer_update_display = 0;
+uint32_t timer_update_sensors = 60e3;
+
+//SYSTEM CONSTANTS
+
+const uint32_t serial_update_delay = 10e3;
+const uint32_t display_update_delay = 100;
+const uint32_t update_sensor_delay = 10e3;
+
+//SYSTEM VARS
+bool print_flag = true;
+
 //DISPLAY
 
 /* Uncomment the initialize the I2C address , uncomment only one, If you get a totally blank screen try the other*/
@@ -51,7 +67,10 @@ const uint8_t PIN_TEMP_WATER_PIPE = A9;
 const uint8_t PIN_TEMP_HEAT_EXCHANGER = A10;
 const uint8_t PIN_TEMP_AIR_FLOW_EVAP = A11;
 
-
+tempSensor * temp_waterTop;
+tempSensor * temp_waterPipe;
+tempSensor * temp_heatExchanger;
+tempSensor * temp_evap;
 
 //ACHS-7121 current sensor
 const uint8_t PIN_CURRENT_SENSOR = A13;

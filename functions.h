@@ -76,21 +76,20 @@ float getCorrectedTemp_air_flux_evap(){
 
 void printTempSensorReport(){
         Serial.print("water top:");
-        Serial.print( getCorrectedTemp_waterTop() );
+        Serial.print( temp_waterTop->getAvgTemp() );
         Serial.print(", water pipe:");
-        Serial.print( getCorrectedTemp_waterPipe() );
+        Serial.print( temp_waterPipe->getAvgTemp() );
         Serial.print(", heat ex:");
-        Serial.print( getCorrectedTemp_heatExchanger()  );
+        Serial.print( temp_heatExchanger->getAvgTemp()  );
         Serial.print(", evap:");
-        Serial.print( getCorrectedTemp_air_flux_evap() );
+        Serial.print( temp_evap->getAvgTemp() );
 }
 
 void printReadableCurrent(){
     //current sensor is 10A bi directional
     //So 1024/2 = 512 point in one directon and 512 in other
     // 10 000 ma / 512 = 19.5mA
-    Serial.print( (float)(getCurrent()) * 0.0195f * 4);
-    Serial.print("A");
+    Serial.print( (float)(getCurrent()) );
 
 }
 
@@ -100,8 +99,7 @@ void printReadableCurrent_mA(){
     // 10 000 ma / 512 = 19.5mA
     //dont know why I need to multiply by 4
     //see later
-    Serial.print( (float)(getCurrent()) * 19.5f * 4 );
-    Serial.print("mA");
+    Serial.print( (float)(getCurrent()) );
 
 }
 
@@ -263,30 +261,7 @@ void forceCoolDown(){
     digitalWrite(PIN_WATER_PUMP, 1);
 }
 
-void setupTimer(){
 
-}
-
-void setupCurrentSensor(){
-
-}
-
-void checkSensors(){
-    analogRead(PIN_TEMP_WATER_TOP);
-    analogRead(PIN_TEMP_WATER_PIPE);
-    analogRead(PIN_TEMP_HEAT_EXCHANGER);
-    analogRead(PIN_TEMP_AIR_FLOW_EVAP);
-
-}
-
-
-void setModeFsm(){
-
-}
-
-void updateSensors(){
-
-}
 
 
 #endif //guard

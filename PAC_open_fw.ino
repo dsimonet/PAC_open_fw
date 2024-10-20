@@ -5,6 +5,8 @@
 
 #include "functions.h"
 #include "define.h"
+#include "tempSensor.h"
+
 
 void setup(){
 
@@ -18,31 +20,37 @@ void setup(){
     tft.setTextColor(SH110X_WHITE);
 
     Serial.println();Serial.println();Serial.println();Serial.println();
-    Serial.println(" -- PAC FW init start -- ");
-    Serial.print("Init GPIO:");             setupPin();             Serial.println("done");
-    Serial.print("Set current reference"); setReferenceCurrent();   Serial.println("done");
-    Serial.print("Check temp Sensors:");    checkSensors();         Serial.println("done");
-    // Serial.print("Init Current Sensor:");   setupCurrentSensor();   Serial.println("done");
-    // Serial.print("Init Timer:");            setupTimer();           Serial.println("done");
-    // Serial.print("Switch FSM:");            setModeFsm();           Serial.println("done");
-    Serial.println(" -- PAC FW init done -- ");
 
+    setupPin();
+    setReferenceCurrent(); 
+
+    temp_waterTop = new tempSensor(PIN_TEMP_WATER_TOP, serie_resistor_water_top, reference_coefficients_water_top);
+    temp_waterPipe = new tempSensor(PIN_TEMP_WATER_PIPE , serie_resistor_water_pipe, reference_coefficients_water_pipe);
+    temp_heatExchanger = new tempSensor(PIN_TEMP_HEAT_EXCHANGER , serie_resistor_heat_exchanger, reference_coefficients_heat_exchanger);
+    temp_evap = new tempSensor(PIN_TEMP_AIR_FLOW_EVAP , serie_resistor_air_flux_evap, reference_coefficients_air_flux_evap);
+    
     allOff();
-
+    delay(2500);    //prevent false start when rebooting
 
 }
-
-uint32_t timer_update_serial = 60e3;   // not zero to get instant update   
-uint32_t timer_update_display = 0;
-const uint32_t serial_update_delay = 10e3;
-const uint32_t display_update_delay = 100;
-bool print_flag = true;
 
 
 void loop(){
 
     //updateSensors();
     //testSequence();
+
+    if(millis() - timer_update_sensors > update_sensor_delay ){
+        timer_update_sensors = millis();
+
+        Serial.print("Update Sensors:");
+        temp_waterTop->updateSensor();
+        temp_waterPipe->updateSensor();
+        temp_heatExchanger->updateSensor();
+        temp_evap->updateSensor();
+        Serial.println("Done");
+
+    }
 
     if(millis() - timer_update_serial > serial_update_delay){
         print_flag = true;
@@ -62,23 +70,23 @@ void loop(){
         tft.setCursor(0, 0);
 
         tft.print("water top:  ");
-        tft.print( getCorrectedTemp_waterTop() );
+        tft.print( temp_waterTop->getAvgTemp() );
         tft.print( (char)247 ); tft.print("C");
         tft.println();
 
         tft.print("water pipe: ");
-        tft.print(getCorrectedTemp_waterPipe() );
+        tft.print(temp_waterPipe->getAvgTemp() );
         tft.print( (char)247 ); tft.print("C");
         tft.println();
 
 
         tft.print("heat ex:    ");
-        tft.print(getCorrectedTemp_heatExchanger() );
+        tft.print( temp_heatExchanger->getAvgTemp() );
         tft.print( (char)247 ); tft.print("C");
         tft.println();
 
-        tft.print("evap:       ");
-        tft.print( getCorrectedTemp_air_flux_evap() );
+        tft.print("temp_evap:       ");
+        tft.print( temp_evap->getAvgTemp() );
         tft.print( (char)247 ); tft.print("C");
         tft.println();
 
@@ -98,7 +106,7 @@ void loop(){
     }
     
     //température ok
-    if( getCorrectedTemp_waterTop() > 40 || getCorrectedTemp_waterPipe() > 40 ){
+    if( temp_waterTop->getAvgTemp() > 40 || temp_waterPipe->getAvgTemp() > 40 ){
 
         if(print_flag){
             Serial.println(" - STOP, TEMP OK");
@@ -106,7 +114,7 @@ void loop(){
         }
 
     //temperature error
-    }else if(getCorrectedTemp_waterTop() > 70 || getCorrectedTemp_waterPipe() > 70 || getCorrectedTemp_heatExchanger() > 80){
+    }else if(temp_waterTop->getAvgTemp() > 70 || temp_waterPipe->getAvgTemp() > 70 || temp_heatExchanger->getAvgTemp() > 80){
             
             while (1)
             {   
@@ -125,7 +133,7 @@ void loop(){
          
     }else{
 
-        if(getCorrectedTemp_heatExchanger() > 68 ){
+        if(temp_heatExchanger->getAvgTemp() > 68 ){
             //off
             digitalWrite(PIN_FAN_LOW_SPEED, 0);
             digitalWrite(PIN_FAN_HIGH_SPEED, 0);
@@ -133,7 +141,7 @@ void loop(){
             digitalWrite(PIN_BYPASS_PRESSURE_REDUCER, 0);
             digitalWrite(PIN_WATER_PUMP, 1);
 
-        }else if(getCorrectedTemp_heatExchanger() < 60){
+        }else if(temp_heatExchanger->getAvgTemp() < 60){
             //on
             digitalWrite(PIN_FAN_LOW_SPEED, 1);
             digitalWrite(PIN_FAN_HIGH_SPEED, 0);
@@ -146,9 +154,9 @@ void loop(){
         //make the water pump work in any case
         digitalWrite(PIN_WATER_PUMP, 1);
 
-        if(getCorrectedTemp_air_flux_evap() < 18){
+        if( temp_evap->getAvgTemp() < 17.5){
             digitalWrite(PIN_LEGACY_RESISTOR_HEAT, 1);
-        }else if(getCorrectedTemp_air_flux_evap() > 18){
+        }else if(temp_evap->getAvgTemp() > 18.5){
              digitalWrite(PIN_LEGACY_RESISTOR_HEAT, 0);
         }
 
